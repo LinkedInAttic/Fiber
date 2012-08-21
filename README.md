@@ -1,6 +1,6 @@
-# Fiber.js
+# Fiber.js: Lightweight, fast, JavaScript inheritance model
 
-JavaScript Inheritance Model
+[![Build Status](https://secure.travis-ci.org/linkedin/Fiber.png?branch=master)](http://travis-ci.org/linkedin/Fiber)
 
 ## Why another JavaScript inheritance library?
 
