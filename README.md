@@ -2,6 +2,10 @@
 
 JavaScript Inheritance Model
 
+## Why another JavaScript inheritance library?
+
+Take a look at the [performance tests](http://jsperf.com/js-inheritance-performance) to see how it compares against commonly used inheritance libraries.
+
 ## Inheritance
 
 ### Usage
