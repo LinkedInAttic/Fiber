@@ -65,9 +65,12 @@
     proto = child.prototype = new this;
     initializing = false;
 
-    // Add default `init` function, which a class may override.
+    // Add default `init` function, which a class may override; it should call the
+    // super class' `init` function (if one exists);
     proto.init = function(){
-      parent.init.call(this, arguments);
+      if (typeof parent.init === 'Function') {
+        parent.init.call(this, arguments);
+      }
     };
 
      // Copy the properties over onto the new prototype.
