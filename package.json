@@ -1,0 +1,22 @@
+{
+  "author": "Kirollos Risk <kirollos@gmail.com>",
+  "name": "Fiber.js",
+  "description": "Lightweight JavaScript inheritance library",
+  "version": "1.0.3",
+  "homepage": "https://github.com/linkedin/Fiber",
+  "main": "fiber.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/linkedin/Fiber.git"
+  },
+  "scripts": {
+    "test": "vows --spec"
+  },
+  "engines": {
+    "node": ">= 0.4"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "vows": "0.6.x"
+  }
+}
