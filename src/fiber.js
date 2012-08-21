@@ -66,7 +66,9 @@
     initializing = false;
 
     // Add default `init` function, which a class may override.
-    proto.init = function(){};
+    proto.init = function(){
+      parent.init.call(this, arguments);
+    };
 
      // Copy the properties over onto the new prototype.
     copy( properties, proto );

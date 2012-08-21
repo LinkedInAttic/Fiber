@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="src/fiber.js"></script>
+</head>
+<body>
+<script>
+
+// Animal base
+var Animal = Fiber.extend(function(base) {
+
+    return {
+        // The `init` method serves as the constructor.
+        init: function() {
+            // Insert private functions here
+            function private1(){}
+            function private2(){}
+
+            // Insert priviledged functions here
+            this.privileged1 = function(){}
+            this.privileged2 = function(){}
+        },
+        method1: function(arguments){
+            console.log('animal::here! method1', this.s, this.result, arguments);
+        },
+        method2: function(arguments){
+            console.log('animal::here! method2', this.s, this.result, arguments);
+        }
+    }
+});
+
+// Extend the Animal class;
+var Dog = Animal.extend(function(base) {
+    return {
+        init: function() {
+            console.log('DEATH');
+            this.base = Fiber.proxy(this);
+
+            this.result = 123;
+            // Call the base init.
+            base.init.call(this);
+        },
+        // Override base class `method1`
+        method1: function(){
+           this.base.method1('hello');
+           this.method2();
+
+           console.log('Dog::method1', this.s);
+        },
+        scare: function(){
+            console.log('Dog::I scare you');
+        }
+    }
+});
+
+var mix1 = function(base) {
+    return  {
+        something1: function() {
+            base.method1.call(this);
+            console.log('mixing:something1', this.s);
+        }
+    }
+};
+
+var mix2 = function(base) {
+    return  {
+        something2: function() {
+            base.method1.call(this);
+            console.log('mixing:something2', this.s);
+        }
+    }
+}
+
+var husky = new Dog();
+husky.scare(); // "Dog::I scare you'"
+husky.s = 1;
+
+Fiber.decorate(husky, function(base) {
+    this.blah = 1;
+
+  return {
+    scream: function() {
+        console.log('SCREAMING!!', base);
+        base.method1.call(this);
+    },
+    indeed: function() {
+        console.log('indeed', this.blah);
+    }
+  }
+});
+
+husky.indeed();
+
+console.log('constructor', husky.constructor.__base);
+
+husky.scream();
+husky.blah;
+
+Fiber.mixin(Dog, mix2);
+
+husky.something2();
+
+function dec(base) {
+    this.greet = function() {
+        this.hi();
+    }
+}
+
+var Parent = Fiber.extend(function() {
+    return {
+        init: function() {
+            console.log('init');
+        },
+        hi: function() {
+            console.log('hi');
+        }
+    }
+});
+
+var Child = Parent.extend(function(base) {
+    return {
+       init: function() {
+            base.init.call(this);
+            Fiber.decorate(this, dec);
+        }
+    }
+});
+
+var c = new Child();
+c.greet();
+
+</script>
+</body>
+</html>
+

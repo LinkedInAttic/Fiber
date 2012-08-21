@@ -1,6 +1,6 @@
 var assert = require('assert'),
     vows = require('vows'),
-    Fiber = require('../fiber');
+    Fiber = require('../src/fiber');
 
 var SuperClass = Fiber.extend(function() {
   return {
