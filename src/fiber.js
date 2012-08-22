@@ -55,10 +55,11 @@
         // Custom initialization is done in the `init` method.
         this.init.apply( this, arguments );
         // Prevent susbsequent calls to `init`.
-        // (Note: although a `delete this.init` would remove the `init` function from the instance,
+        // Note: although a `delete this.init` would remove the `init` function from the instance,
         // it would still exist in its super class' prototype.  Therefore, explicitly set
-        // `init` to `undefined`)
-        this.init = undefined;
+        // `init` to `void 0` to obtain the `undefined` primitive value (in case the global's `undefined`
+        // property has been re-assigned).
+        this.init = void 0;
       }
     }
 
