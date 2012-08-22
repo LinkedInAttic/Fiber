@@ -39,7 +39,7 @@ var Animal = Fiber.extend(function(base) {
 var Dog = Animal.extend(function(base) {
     return {
         init: function() {
-            console.log('DEATH');
+            console.log('Dog::init');
             this.base = Fiber.proxy(this);
 
             this.result = 123;
@@ -63,7 +63,7 @@ var mix1 = function(base) {
     return  {
         something1: function() {
             base.method1.call(this);
-            console.log('mixing:something1', this.s);
+            console.log('mixin:something1', this.s);
         }
     }
 };
@@ -72,7 +72,7 @@ var mix2 = function(base) {
     return  {
         something2: function() {
             base.method1.call(this);
-            console.log('mixing:something2', this.s);
+            console.log('mixin:something2', this.s);
         }
     }
 }
@@ -86,7 +86,7 @@ Fiber.decorate(husky, function(base) {
 
   return {
     scream: function() {
-        console.log('SCREAMING!!', base);
+        console.log('scream', base);
         base.method1.call(this);
     },
     indeed: function() {
