@@ -55,21 +55,24 @@
         // Custom initialization is done in the `init` method.
         this.init.apply( this, arguments );
         // Prevent susbsequent calls to `init`.
-        delete this.init;
+        // (Note: although a `delete this.init` would remove the `init` function from the instance,
+        // it would still exist in its super class' prototype.  Therefore, explicitly set
+        // `init` to `undefined`)
+        this.init = undefined;
       }
     }
 
-    // Instantiate a base class (but only create the instance, don't run the init function),
+    // Instantiate a base class (but only create the instance, without running `init`).
     // and make every `constructor` instance an instance of `this` and of `constructor`.
     initializing = true;
     proto = child.prototype = new this;
     initializing = false;
 
     // Add default `init` function, which a class may override; it should call the
-    // super class' `init` function (if one exists);
+    // super class' `init` function (if it exists);
     proto.init = function(){
-      if (typeof parent.init === 'Function') {
-        parent.init.call(this, arguments);
+      if ( typeof parent.init === 'function' ) {
+        parent.init.apply( this, arguments );
       }
     };
 
