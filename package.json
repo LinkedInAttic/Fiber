@@ -1,10 +1,10 @@
 {
   "author": "Kirollos Risk <kirollos@gmail.com>",
-  "name": "Fiber.js",
+  "name": "fiber",
   "description": "Lightweight JavaScript inheritance library",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "homepage": "https://github.com/linkedin/Fiber",
-  "main": "fiber.js",
+  "main": "./src/fiber.js",
   "repository": {
     "type": "git",
     "url": "git://github.com/linkedin/Fiber.git"
