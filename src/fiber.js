@@ -234,7 +234,7 @@
   // --------------
 
   // Export `Fiber` to Common JS Loader
-  if( typeof module !== 'undefined' ) {
+  if( module && typeof module.exports !== 'undefined' ) {
     if( typeof module.setExports === 'function' ) {
       module.setExports( Fiber );
     } else if( module.exports ) {
