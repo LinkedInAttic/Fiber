@@ -1,4 +1,4 @@
-//     Fiber.js 1.0.4
+//     Fiber.js 1.0.5
 //     @author: Kirollos Risk
 //
 //     Copyright (c) 2012 LinkedIn.
