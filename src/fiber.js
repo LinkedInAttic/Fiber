@@ -1,11 +1,24 @@
 //     Fiber.js 1.0.4
-//     @Author: Kirollos Risk
+//     @author: Kirollos Risk
 //
 //     Copyright (c) 2012 LinkedIn.
 //     All Rights Reserved. Apache Software License 2.0
 //     http://www.apache.org/licenses/LICENSE-2.0
 
-( function( global ) {
+(function (root, factory) {
+  if (typeof exports === 'object') {
+      // Node. Does not work with strict CommonJS, but
+      // only CommonJS-like environments that support module.exports,
+      // like Node.
+      module.exports = factory();
+  } else if (typeof define === 'function' && define.amd) {
+      // AMD. Register as an anonymous module.
+      define(factory);
+  } else {
+      // Browser globals (root is window)
+      root.Fiber = factory();
+  }
+}(this, function () {
 
   // Baseline setup
   // --------------
@@ -32,7 +45,7 @@
   }
 
   // The base `Fiber` implementation.
-  function Fiber(){};
+  function Fiber(){}
 
   // ###Extend
   //
@@ -230,19 +243,5 @@
     return Fiber;
   };
 
-  // Common JS
-  // --------------
-
-  // Export `Fiber` to Common JS Loader
-  if( module && typeof module.exports !== 'undefined' ) {
-    if( typeof module.setExports === 'function' ) {
-      module.setExports( Fiber );
-    } else if( module.exports ) {
-      module.exports = Fiber;
-    }
-  } else {
-    global.Fiber = Fiber;
-  }
-
-// Establish the root object: `window` in the browser, or global on the server.
-})( this );
+  return Fiber;
+}));
