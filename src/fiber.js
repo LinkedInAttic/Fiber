@@ -88,7 +88,7 @@
     child.__base__ = parent;
 
      // Make this class extendable.
-    child.extend = Fiber.extend;
+    child.extend = child.prototype.extend || Fiber.extend;
 
     return child;
   };
