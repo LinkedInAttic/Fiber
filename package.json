@@ -18,5 +18,9 @@
   "dependencies": {},
   "devDependencies": {
     "vows": "0.6.x"
-  }
+  },
+  "contributors": [{
+    "name": "Robert Martone",
+    "email": "iheartweb@gmail.com"
+  }]
 }
