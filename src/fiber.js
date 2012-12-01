@@ -24,15 +24,17 @@
       // Node. Does not work with strict CommonJS, but
       // only CommonJS-like environments that support module.exports,
       // like Node.
-      module.exports = factory();
+      module.exports = factory(this);
     } else if (typeof define === 'function' && define.amd) {
       // AMD. Register as an anonymous module.
-      define(factory);
+      define(function () {
+        return factory(root);
+      });
     } else {
       // Browser globals (root is window)
-      root.Fiber = factory();
+      root.Fiber = factory(root);
     }
-  }(this, function () {
+  }(this, function (global) {
 
     // Baseline setup
     // --------------
@@ -43,10 +45,10 @@
 
     // Keep a few prototype references around - for speed access,
     // and saving bytes in the minified version.
-      ArrayProto = Array.prototype,
+    ArrayProto = Array.prototype,
 
     // Save the previous value of `Fiber`.
-      previousFiber = global.Fiber;
+    previousFiber = global.Fiber;
 
     // Helper function to copy properties from one object to the other.
     function copy(from, to) {
@@ -265,5 +267,4 @@
 
     return Fiber;
   }));
-
 } ());
