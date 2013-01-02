@@ -1,0 +1,188 @@
+<!DOCTYPE html>  <html> <head>   <title>fiber.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               fiber.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <pre><code>Fiber.js 1.0.5
+@author: Kirollos Risk
+
+Copyright (c) 2012 LinkedIn.
+All Rights Reserved. Apache Software License 2.0
+http://www.apache.org/licenses/LICENSE-2.0
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+  <span class="cm">/*jshint bitwise: true, camelcase: false, curly: true, eqeqeq: true,</span>
+<span class="cm">    forin: false, immed: true, indent: 2, latedef: true, newcap: false,</span>
+<span class="cm">    noarg: true, noempty: false, nonew: true, plusplus: false,</span>
+<span class="cm">    quotmark: single, regexp: false, undef: true, unused: true, strict: false,</span>
+<span class="cm">    trailing: true, asi: false, boss: false, debug: false, eqnull: true,</span>
+<span class="cm">    es5: false, esnext: false, evil: true, expr: false, funcscope: false,</span>
+<span class="cm">    iterator: false, lastsemic: false, laxbreak: false, laxcomma: false,</span>
+<span class="cm">    loopfunc: false, multistr: true, onecase: false, proto: false,</span>
+<span class="cm">    regexdash: false, scripturl: false, smarttabs: false, shadow: true,</span>
+<span class="cm">    sub: true, supernew: true, validthis: false */</span>
+
+  <span class="cm">/*global exports, global, define, module */</span>
+
+  <span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">root</span><span class="p">,</span> <span class="nx">factory</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">exports</span> <span class="o">===</span> <span class="s1">&#39;object&#39;</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>Node. Does not work with strict CommonJS, but
+only CommonJS-like environments that support module.exports,
+like Node.</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="nx">factory</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">define</span> <span class="o">===</span> <span class="s1">&#39;function&#39;</span> <span class="o">&amp;&amp;</span> <span class="nx">define</span><span class="p">.</span><span class="nx">amd</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>AMD. Register as an anonymous module.</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nx">define</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">factory</span><span class="p">(</span><span class="nx">root</span><span class="p">);</span>
+      <span class="p">});</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>Browser globals (root is window)</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nx">root</span><span class="p">.</span><span class="nx">Fiber</span> <span class="o">=</span> <span class="nx">factory</span><span class="p">(</span><span class="nx">root</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">}(</span><span class="k">this</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">global</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <h2>Baseline setup</h2>             </td>             <td class="code">               <div class="highlight"><pre></pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>Stores whether the object is being initialized. i.e., whether
+to run the <code>init</code> function, or not.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="kd">var</span> <span class="nx">initializing</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span></pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>Keep a few prototype references around - for speed access,
+and saving bytes in the minified version.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">ArrayProto</span> <span class="o">=</span> <span class="nb">Array</span><span class="p">.</span><span class="nx">prototype</span><span class="p">,</span></pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>Save the previous value of <code>Fiber</code>.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">previousFiber</span> <span class="o">=</span> <span class="nx">global</span><span class="p">.</span><span class="nx">Fiber</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>Helper function to copy properties from one object to the other.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="kd">function</span> <span class="nx">copy</span><span class="p">(</span><span class="nx">from</span><span class="p">,</span> <span class="nx">to</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">name</span><span class="p">;</span>
+      <span class="k">for</span> <span class="p">(</span><span class="nx">name</span> <span class="k">in</span> <span class="nx">from</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">from</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">(</span><span class="nx">name</span><span class="p">))</span> <span class="p">{</span>
+          <span class="nx">to</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span> <span class="o">=</span> <span class="nx">from</span><span class="p">[</span><span class="nx">name</span><span class="p">];</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+    <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>The base <code>Fiber</code> implementation.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="kd">function</span> <span class="nx">Fiber</span><span class="p">()</span> <span class="p">{}</span></pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <h3>Extend</h3>
+
+<p>Returns a subclass.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">Fiber</span><span class="p">.</span><span class="nx">extend</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">fn</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>Keep a reference to the current prototye.</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="kd">var</span> <span class="nx">parent</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">prototype</span><span class="p">,</span></pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p>Invoke the function which will return an object literal used to
+define the prototype. Additionally, pass in the parent prototype,
+which will allow instances to use it.</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nx">properties</span> <span class="o">=</span> <span class="nx">fn</span><span class="p">(</span><span class="nx">parent</span><span class="p">),</span></pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <p>Stores the constructor's prototype.</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nx">proto</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <p>The constructor function for a subclass.</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="kd">function</span> <span class="nx">child</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">initializing</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-16">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-16">&#182;</a>               </div>               <p>Custom initialization is done in the <code>init</code> method.</p>             </td>             <td class="code">               <div class="highlight"><pre>          <span class="k">this</span><span class="p">.</span><span class="nx">init</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-17">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-17">&#182;</a>               </div>               <p>Prevent subsequent calls to <code>init</code>. Note: although a <code>delete
+this.init</code> would remove the <code>init</code> function from the instance, it
+would still exist in its super class' prototype.  Therefore,
+explicitly set <code>init</code> to <code>void 0</code> to obtain the <code>undefined</code>
+primitive value (in case the global's <code>undefined</code> property has
+been re-assigned).</p>             </td>             <td class="code">               <div class="highlight"><pre>          <span class="k">this</span><span class="p">.</span><span class="nx">init</span> <span class="o">=</span> <span class="k">void</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="p">}</span>
+      <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <p>Instantiate a base class (but only create the instance, without
+running <code>init</code>). And, make every <code>constructor</code> instance an instance
+of <code>this</code> and of <code>constructor</code>.</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nx">initializing</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+      <span class="nx">proto</span> <span class="o">=</span> <span class="nx">child</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="k">new</span> <span class="k">this</span><span class="p">;</span>
+      <span class="nx">initializing</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <p>Add default <code>init</code> function, which a class may override; it should
+call the super class' <code>init</code> function (if it exists);</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nx">proto</span><span class="p">.</span><span class="nx">init</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">parent</span><span class="p">.</span><span class="nx">init</span> <span class="o">===</span> <span class="s1">&#39;function&#39;</span><span class="p">)</span> <span class="p">{</span>
+          <span class="nx">parent</span><span class="p">.</span><span class="nx">init</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span>
+        <span class="p">}</span>
+      <span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-20">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-20">&#182;</a>               </div>               <p>Copy the properties over onto the new prototype.</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nx">copy</span><span class="p">(</span><span class="nx">properties</span><span class="p">,</span> <span class="nx">proto</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-21">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-21">&#182;</a>               </div>               <p>Enforce the constructor to be what we expect.</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nx">proto</span><span class="p">.</span><span class="nx">constructor</span> <span class="o">=</span> <span class="nx">child</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-22">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-22">&#182;</a>               </div>               <p>Keep a reference to the parent prototype.
+(Note: currently used by decorators and mixins, so that the parent
+can be inferred).</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nx">child</span><span class="p">.</span><span class="nx">__base__</span> <span class="o">=</span> <span class="nx">parent</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-23">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-23">&#182;</a>               </div>               <p>Make this class extendable, this can be overridden by providing a
+custom extend method on the proto.</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nx">child</span><span class="p">.</span><span class="nx">extend</span> <span class="o">=</span> <span class="nx">child</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">extend</span> <span class="o">||</span> <span class="nx">Fiber</span><span class="p">.</span><span class="nx">extend</span><span class="p">;</span>
+
+
+      <span class="k">return</span> <span class="nx">child</span><span class="p">;</span>
+    <span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-24">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-24">&#182;</a>               </div>               <h2>Utilities</h2>             </td>             <td class="code">               <div class="highlight"><pre></pre></div>             </td>           </tr>                               <tr id="section-25">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-25">&#182;</a>               </div>               <h3>Proxy</h3>
+
+<p>Returns a proxy object for accessing base methods with a given context.</p>
+
+<ul>
+<li><code>base</code>: the instance' parent class prototype.</li>
+<li><code>instance</code>: a Fiber class instance.</li>
+</ul>
+
+<p>Overloads:</p>
+
+<ul>
+<li><code>Fiber.proxy( instance )</code></li>
+<li><code>Fiber.proxy( base, instance )</code></li>
+</ul>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">Fiber</span><span class="p">.</span><span class="nx">proxy</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">base</span><span class="p">,</span> <span class="nx">instance</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">name</span><span class="p">,</span>
+        <span class="nx">iface</span> <span class="o">=</span> <span class="p">{},</span>
+        <span class="nx">wrap</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-26">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-26">&#182;</a>               </div>               <p>If there's only 1 argument specified, then it is the instance,
+thus infer <code>base</code> from its constructor.</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="k">if</span> <span class="p">(</span><span class="nx">arguments</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">instance</span> <span class="o">=</span> <span class="nx">base</span><span class="p">;</span>
+        <span class="nx">base</span> <span class="o">=</span> <span class="nx">instance</span><span class="p">.</span><span class="nx">constructor</span><span class="p">.</span><span class="nx">__base__</span><span class="p">;</span>
+      <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-27">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-27">&#182;</a>               </div>               <p>Returns a function which calls another function with <code>instance</code> as
+the context.</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nx">wrap</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">fn</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+          <span class="k">return</span> <span class="nx">base</span><span class="p">[</span><span class="nx">fn</span><span class="p">].</span><span class="nx">apply</span><span class="p">(</span><span class="nx">instance</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span>
+        <span class="p">};</span>
+      <span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-28">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-28">&#182;</a>               </div>               <p>For each function in <code>base</code>, create a wrapped version.</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="k">for</span> <span class="p">(</span><span class="nx">name</span> <span class="k">in</span> <span class="nx">base</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">base</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="k">typeof</span> <span class="nx">base</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span> <span class="o">===</span> <span class="s1">&#39;function&#39;</span><span class="p">)</span> <span class="p">{</span>
+          <span class="nx">iface</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span> <span class="o">=</span> <span class="nx">wrap</span><span class="p">(</span><span class="nx">name</span><span class="p">);</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+      <span class="k">return</span> <span class="nx">iface</span><span class="p">;</span>
+    <span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-29">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-29">&#182;</a>               </div>               <h3>Decorate</h3>
+
+<p>Decorate an instance with given decorator(s).</p>
+
+<ul>
+<li><code>instance</code>: a Fiber class instance.</li>
+<li><code>decorator[s]</code>: the argument list of decorator functions.</li>
+</ul>
+
+<p>Note: when a decorator is executed, the argument passed in is the super
+class' prototype, and the context (i.e. the <code>this</code> binding) is the
+instance.</p>
+
+<p><em>Example usage:</em></p>
+
+<pre><code>function Decorator( base ) {
+  // this === obj
+  return {
+    greet: function() {
+      console.log('hi!');
+    }
+  };
+}
+
+var obj = new Bar(); // Some instance of a Fiber class
+Fiber.decorate(obj, Decorator);
+obj.greet(); // hi!
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">Fiber</span><span class="p">.</span><span class="nx">decorate</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">instance</span> <span class="cm">/*, decorator[s] */</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">i</span><span class="p">,</span></pre></div>             </td>           </tr>                               <tr id="section-30">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-30">&#182;</a>               </div>               <p>Get the base prototype.</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="nx">base</span> <span class="o">=</span> <span class="nx">instance</span><span class="p">.</span><span class="nx">constructor</span><span class="p">.</span><span class="nx">__base__</span><span class="p">,</span></pre></div>             </td>           </tr>                               <tr id="section-31">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-31">&#182;</a>               </div>               <p>Get all the decorators in the arguments.</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="nx">decorators</span> <span class="o">=</span> <span class="nx">ArrayProto</span><span class="p">.</span><span class="nx">slice</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">arguments</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+        <span class="nx">len</span> <span class="o">=</span> <span class="nx">decorators</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
+
+      <span class="k">for</span> <span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">len</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">copy</span><span class="p">(</span><span class="nx">decorators</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">call</span><span class="p">(</span><span class="nx">instance</span><span class="p">,</span> <span class="nx">base</span><span class="p">),</span> <span class="nx">instance</span><span class="p">);</span>
+      <span class="p">}</span>
+    <span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-32">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-32">&#182;</a>               </div>               <h3>Mixin</h3>
+
+<p>Add functionality to a Fiber definition</p>
+
+<ul>
+<li><code>definition</code>: a Fiber class definition.</li>
+<li><code>mixin[s]</code>: the argument list of mixins.</li>
+</ul>
+
+<p>Note: when a mixing is executed, the argument passed in is the super
+class' prototype (i.e., the base)</p>
+
+<p>Overloads:</p>
+
+<ul>
+<li><code>Fiber.mixin( definition, mix_1 )</code></li>
+<li><code>Fiber.mixin( definition, mix_1, ..., mix_n )</code></li>
+</ul>
+
+<p><em>Example usage:</em></p>
+
+<pre><code>var Definition = Fiber.extend(function(base) {
+  return {
+    method1: function(){}
+  }
+});
+
+function Mixin(base) {
+  return {
+    method2: function(){}
+  }
+}
+
+Fiber.mixin(Definition, Mixin);
+var obj = new Definition();
+obj.method2();
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">Fiber</span><span class="p">.</span><span class="nx">mixin</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">definition</span> <span class="cm">/*, mixin[s] */</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">i</span><span class="p">,</span></pre></div>             </td>           </tr>                               <tr id="section-33">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-33">&#182;</a>               </div>               <p>Get the base prototype.</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="nx">base</span> <span class="o">=</span> <span class="nx">definition</span><span class="p">.</span><span class="nx">__base__</span><span class="p">,</span></pre></div>             </td>           </tr>                               <tr id="section-34">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-34">&#182;</a>               </div>               <p>Get all the mixins in the arguments.</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="nx">mixins</span> <span class="o">=</span> <span class="nx">ArrayProto</span><span class="p">.</span><span class="nx">slice</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">arguments</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+        <span class="nx">len</span> <span class="o">=</span> <span class="nx">mixins</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
+
+      <span class="k">for</span> <span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">len</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">copy</span><span class="p">(</span><span class="nx">mixins</span><span class="p">[</span><span class="nx">i</span><span class="p">](</span><span class="nx">base</span><span class="p">),</span> <span class="nx">definition</span><span class="p">.</span><span class="nx">prototype</span><span class="p">);</span>
+      <span class="p">}</span>
+    <span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-35">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-35">&#182;</a>               </div>               <h3>noConflict</h3>
+
+<p>Run Fiber.js in <em>noConflict</em> mode, returning the <code>fiber</code> variable to
+its previous owner. Returns a reference to the Fiber object.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">Fiber</span><span class="p">.</span><span class="nx">noConflict</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+      <span class="nx">global</span><span class="p">.</span><span class="nx">Fiber</span> <span class="o">=</span> <span class="nx">previousFiber</span><span class="p">;</span>
+      <span class="k">return</span> <span class="nx">Fiber</span><span class="p">;</span>
+    <span class="p">};</span>
+
+    <span class="k">return</span> <span class="nx">Fiber</span><span class="p">;</span>
+  <span class="p">}));</span>
+<span class="p">}</span> <span class="p">());</span>
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
