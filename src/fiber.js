@@ -73,7 +73,7 @@
       // Invoke the function which will return an object literal used to
       // define the prototype. Additionally, pass in the parent prototype,
       // which will allow instances to use it.
-      properties = fn(parent),
+      properties = (typeof fn === 'function') ? fn(parent) : fn,
 
       // Stores the constructor's prototype.
       proto;
