@@ -203,10 +203,14 @@
         base = instance.constructor.__base__,
         // Get all the decorators in the arguments.
         decorators = ArrayProto.slice.call(arguments, 1),
-        len = decorators.length;
+        len = decorators.length,
+        result;
 
       for (i = 0; i < len; i++) {
-        copy(decorators[i].call(instance, base), instance);
+
+        result = (typeof mixins[i] === 'function') ? decorators[i].call(instance, base) : mixins[i];
+
+        copy(result, instance);
       }
     };
 
@@ -249,10 +253,14 @@
         base = definition.__base__,
         // Get all the mixins in the arguments.
         mixins = ArrayProto.slice.call(arguments, 1),
-        len = mixins.length;
+        len = mixins.length,
+        result;
 
       for (i = 0; i < len; i++) {
-        copy(mixins[i](base), definition.prototype);
+
+        result = (typeof mixins[i] === 'function') ? mixins[i](base) : mixins[i];
+
+        copy(result, definition.prototype);
       }
     };
 
