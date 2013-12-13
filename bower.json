@@ -7,7 +7,7 @@
   "ignore": [
     "**/.*",
     "docs",
-    "tests",
+    "test",
     "package.json",
     "*.html"
   ]
