@@ -1,0 +1,14 @@
+{
+  "name": "fiber",
+  "version": "1.0.4",
+  "main": [
+    "./src/fiber.js"
+  ],
+  "ignore": [
+    "**/.*",
+    "docs",
+    "test",
+    "package.json",
+    "*.html"
+  ]
+}
