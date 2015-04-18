@@ -8,7 +8,6 @@
 
 // Animal base
 var Animal = Fiber.extend(function(base) {
-
     return {
         // The `init` method serves as the constructor.
         init: function() {
@@ -53,6 +52,7 @@ var Dog = Animal.extend(function(base) {
     }
 });
 
+// Mixins
 var mix1 = function(base) {
     return  {
         something1: function() {
