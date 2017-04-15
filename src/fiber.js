@@ -200,7 +200,7 @@
     Fiber.decorate = function (instance /*, decorator[s] */) {
       var i,
         // Get the base prototype.
-        base = instance.constructor.__base__,
+        base = instance.constructor.prototype,
         // Get all the decorators in the arguments.
         decorators = ArrayProto.slice.call(arguments, 1),
         len = decorators.length;
@@ -246,7 +246,7 @@
     Fiber.mixin = function (definition /*, mixin[s] */) {
       var i,
         // Get the base prototype.
-        base = definition.__base__,
+        base = definition.prototype,
         // Get all the mixins in the arguments.
         mixins = ArrayProto.slice.call(arguments, 1),
         len = mixins.length;
