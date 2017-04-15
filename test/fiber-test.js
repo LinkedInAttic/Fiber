@@ -95,7 +95,7 @@ vows.describe('Inheritance').addBatch({
         return {
           method2: function() {
             return true;
-          },
+          }
         };
       });
       var t = new Sub('name');
@@ -109,6 +109,26 @@ vows.describe('Inheritance').addBatch({
       assert.isFunction(result.method2);
       assert.isTrue(result.method2());
     }
+  },
+  'Allow alternative class definition': {
+      topic: function() {
+        var Sub = Definition.extend({
+            method2: function() {
+              return true;
+            }
+        });
+
+        var t = new Sub('name');
+        return t;
+      },
+      'A method that only exists in the super class should stills execute': function (result) {
+        assert.isFunction(result.method1);
+        assert.isTrue(result.method1());
+      },
+      'A method that is overridden should execute': function (result) {
+        assert.isFunction(result.method2);
+        assert.isTrue(result.method2());
+      }
   },
   'When initializing a super and sub class': {
     topic: function() {
